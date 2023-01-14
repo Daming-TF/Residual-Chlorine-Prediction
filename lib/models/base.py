@@ -18,7 +18,7 @@ class CNNnetwork(nn.Module):
 
     def forward(self, x):
         x = self.conv1(x)
-        x = x.view(-1)
+        # x = x.view(-1)
         x = self.pridict(x)
         return x
 
