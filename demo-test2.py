@@ -9,7 +9,7 @@ import time
 from torch.nn.functional import relu
 from sklearn.metrics import mean_squared_error,mean_absolute_error,r2_score
 
-residualChlorine = pandas.read_excel('E:\ShenzhenWaterData\HongmushanResidualChlorine.xlsx')
+residualChlorine = pandas.read_excel(r'E:\residual chlorine\HongmushanResidualChlorine.xlsx')
 n = 80
 window_size = 5
 residualChlorineTrain = residualChlorine.values[0:n,1]
@@ -58,7 +58,7 @@ torch.manual_seed(101)
 model = CNNnetwork()
 criterion = nn.MSELoss()
 optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
-epochs = 100
+epochs = 200
 model.train()
 start_time = time.time()
 for epoch in range(epochs):
@@ -73,7 +73,8 @@ for epoch in range(epochs):
 print(f'\nDuration: {time.time() - start_time:.0f} seconds')
 
 trainNum = len(residualChlorineTrain_norm_tenser)
-preds = residualChlorineTrain_norm_tenser[-window_size:].tolist()
+# preds = residualChlorineTrain_norm_tenser[-window_size:].tolist()
+preds = residualChlorineTrain_norm_tenser[0:window_size].tolist()
 
 model.eval()
 
@@ -91,11 +92,12 @@ trainPredictions = scaler.inverse_transform(numpy.array(preds[window_size:n]).re
 MAE_train = mean_absolute_error(residualChlorineTrain[window_size:n], trainPredictions, multioutput = 'raw_values')
 MSE_train = mean_squared_error(residualChlorineTrain[window_size:n], trainPredictions, multioutput = 'raw_values')
 MAPE_train = mape(residualChlorineTrain[window_size:n], trainPredictions)
-
+# print(f"MAE[Train]: {MAE_train}\tMSE[Train]: {MSE_train}\tMAPE[Train]: {MAPE_train}")
+print('{:40}{:<40}{:<40}'.format(f"MAE[Train]: {MAE_train}", f"MSE[Train]: {MSE_train}", f"MAPE[Train]: {MAPE_train}"))
 
 futureValues = len(residualChlorineTest_norm_tenser)
 
-preds = residualChlorineTest_norm_tenser[-window_size:].tolist()
+preds = residualChlorineTest_norm_tenser[0:window_size].tolist()
 
 model.eval()
 
@@ -108,6 +110,8 @@ testPredictions = scaler.inverse_transform(numpy.array(preds[window_size:len(res
 MAE_test = mean_absolute_error(residualChlorineTest[window_size:len(residualChlorineTest)], testPredictions, multioutput = 'raw_values')
 MSE_test = mean_squared_error(residualChlorineTest[window_size:len(residualChlorineTest)], testPredictions, multioutput = 'raw_values')
 MAPE_test = mape(residualChlorineTest[window_size:len(residualChlorineTest)], testPredictions)
+# print(f"MAE[Test]: {MAE_test}\tMSE[Test]: {MSE_test}\tMAPE[Test]: {MAPE_test}")
+print('{:<40}{:<40}{:<40}'.format(f"MAE[Test]: {MAE_test}", f"MSE[Test]: {MSE_test}", f"MAPE[Test]: {MAPE_test}"))
 
 pyplot.figure(figsize=(12,4))
 pyplot.grid(True)
