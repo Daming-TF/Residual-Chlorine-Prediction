@@ -1,6 +1,4 @@
-import torch.utils.hipify.constants
 from torch.utils.data import Dataset
-import copy
 
 
 class ResidualChlorineDataset(Dataset):
