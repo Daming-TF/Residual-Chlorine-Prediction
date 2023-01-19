@@ -3,16 +3,16 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 
-def plot_res(ws, train_pred, test_pred, res_cl_train, res_cl_test):
+def plot_res(ws, train_pred, test_pred, res_cl_train, res_cl_test, interval=1):
     x1 = np.arange(0, train_pred.shape[0], 1)
     x2 = np.arange(0, test_pred.shape[0], 1)
-    print(x1.shape)
+
     plt.subplot(1, 2, 1)
-    plt.plot(x1, res_cl_train[ws:, ], c='b')
-    plt.plot(x1, train_pred, c='c', marker='.')
+    plt.plot(x1[::interval], res_cl_train[ws::interval, ], c='b', marker='+')
+    plt.plot(x1[::interval], train_pred[::interval], c='c', marker='.')
     plt.subplot(1, 2, 2)
-    plt.plot(x2, res_cl_test[ws:, ], c='b')
-    plt.plot(x2, test_pred, c='c', marker='.')
+    plt.plot(x2[::interval], res_cl_test[ws::interval, ], c='b', marker='+')
+    plt.plot(x2[::interval], test_pred[::interval], c='c', marker='.')
     plt.show()
     # pyplot.figure(figsize=(12, 4))
     # pyplot.grid(True)

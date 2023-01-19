@@ -18,12 +18,9 @@ def data_seg2(args):
         res_cl_train_norm， res_cl_test_norm：标准化的训练序列和测试序列，行向量(tensor)
     """
     data_path = args.data_path
-    # n = args.train_data_num
-    window_size = args.window_size
     dividing_time = args.dividing_time
 
     res_cl = pandas.read_excel(data_path)
-    # res_cl = res_cl.drop(res_cl[res_cl.values[:, 1] == 0].index).dropna()     # 旧方法
 
     # 数据加载慢主要在于res_cl.values的遍历，所以使用下面的方法：
     index_list = res_cl[res_cl.values[:, 0] == "val"].index
@@ -47,9 +44,7 @@ def data_seg2(args):
     print(f"\033[1;33;40m {info} \033[0m]")
 
     scaler = MinMaxScaler(feature_range=(-1, 1))
-    # res_cl_train_norm = scaler.fit_transform(res_cl_train.reshape(-1, 1))    # 将数据变为列向量并归一化
     res_cl_train_norm = torch.FloatTensor(scaler.fit_transform(res_cl_train.reshape(-1, 1))).view(-1)
-    # residualChlorineTest_norm = scaler.fit_transform(res_cl_test.reshape(-1, 1))
     res_cl_test_norm = torch.FloatTensor(scaler.fit_transform(res_cl_test.reshape(-1, 1))).view(-1)
     if torch.cuda.is_available() and args.gpu_enable:
         res_cl_train_norm = res_cl_train_norm.cuda()

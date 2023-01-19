@@ -2,8 +2,9 @@ import torch.nn as nn
 
 
 class CNNnetwork(nn.Module):
-    def __init__(self):
+    def __init__(self, args):
         super().__init__()
+        self.ws = args.window_size
         self.conv1 = nn.Sequential(
             nn.Conv1d(1, 8, 2, 1), nn.ReLU(),
             nn.Conv1d(8, 16, 2, 1), nn.ReLU(),
@@ -13,7 +14,7 @@ class CNNnetwork(nn.Module):
             nn.Flatten()
         )
         self.pridict = nn.Sequential(
-            nn.Linear(64, 32), nn.ReLU(), nn.Linear(32, 1)
+            nn.Linear(64*(self.ws-4), 1024), nn.ReLU(), nn.Linear(1024, 1)
         )
 
     def forward(self, x):
@@ -23,8 +24,8 @@ class CNNnetwork(nn.Module):
         return x
 
 
-def get_net():
-    return CNNnetwork()
+def get_net(args):
+    return CNNnetwork(args)
 
 
 if __name__ == '__main__':

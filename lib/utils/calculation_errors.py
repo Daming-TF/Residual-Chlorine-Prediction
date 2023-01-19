@@ -11,5 +11,4 @@ def cal_err(gt, pred):
     mae = mean_absolute_error(gt, pred, multioutput='raw_values')
     mse = mean_squared_error(gt, pred, multioutput='raw_values')
     mape = map_error(gt, pred)
-    print('{:40}{:<40}{:<40}'.format(f"MAE[Train]: {mae}", f"MSE[Train]: {mse}",
-                                     f"MAPE[Train]: {mape}"))
+    print('{:40}{:<40}{:<40}'.format(f"MAE: {mae}", f"MSE: {mse}", f"MAPE: {mape}"))
