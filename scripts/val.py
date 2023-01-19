@@ -17,14 +17,27 @@ def val(args, model, scaler, raw_data_norm):
         if torch.cuda.is_available() and args.gpu_enable:
             seq = seq.cuda()
         with torch.no_grad():
-            out = model(seq.reshape(1, 1, -1)).item()
-            input_seq.append(out)
-            preds_norm.append(out)
+            out = model(seq.reshape(1, 1, -1)).contiguous().view(1, -1).tolist()[0]
+            input_seq.append(out[0])
+            preds_norm.append(out[0])
 
     preds = data_inverse_transform(scaler, preds_norm)
     raw_data = data_inverse_transform(scaler, raw_data_norm)
     cal_err(raw_data[window_size:len(raw_data_norm)], preds)
     return preds, raw_data
+
+
+def val_once(args, model, scaler, raw_data_norm):
+    window_size = args.window_size
+    input_seq = raw_data_norm[0:window_size].tolist()       # 存放归一化预测数据
+    preds_norm = []      # 用于存储输入模型的序列数据
+
+    seq = torch.FloatTensor(input_seq[-window_size:])
+    if torch.cuda.is_available() and args.gpu_enable:
+        seq = seq.cuda()
+    with torch.no_grad():
+        out = model(seq.reshape(1, 1, -1)).cpu().contiguous().view(1, -1)[0]
+    return scaler.inverse_transform(out.numpy().reshape(-1, 1))
 
 
 def val_old(args, model, data_num, scaler, init_seq, raw_data):
