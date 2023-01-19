@@ -5,6 +5,6 @@ import torch.nn as nn
 a = np.arange(0, 5, 1).reshape(1, 1, -1)
 a = torch.FloatTensor(a)
 print(a)
-conv1 = nn.Conv1d(1, 8, 2, 1)
+conv1 = nn.Conv1d(1, 8, 3, 1, padding=1)
 b = conv1(a)
 print(b)
