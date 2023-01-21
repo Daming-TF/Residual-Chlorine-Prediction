@@ -12,7 +12,7 @@ sys.path.append(search_path)
 from lib.config import argparser
 import lib.models
 from lib.dataset import ResidualChlorineDataset, data_seg1, data_seg2
-from val import val, val_once
+from val import val, val_once_pro
 from lib.utils import plot_res, init_seeds
 
 
@@ -64,9 +64,10 @@ def main():
 
     # Step4：模型验证
     model.eval()    # 不启用 Batch Normalization 和 Dropout
+    once_pred = val_once_pro(args, model, scaler, res_cl_test_norm)
     # train_pred, res_cl_train = val(args, model, scaler, res_cl_train_norm)
     test_pred, res_cl_test = val(args, model, scaler, res_cl_test_norm)
-    once_pred = val_once(args, model, scaler, res_cl_test_norm)
+
 
     # Step5:可视化预测结果
     info = '{:20}{:<20}{:<20}'.format(f'model:{args.model}', f'window_size:{args.window_size}',
@@ -74,7 +75,7 @@ def main():
     print(f"\033[1;33;40m {info} \033[0m]")
     # plot_res(args.window_size, train_pred, test_pred, res_cl_train, res_cl_test)
     # plot2(args.label_length, args.window_size, once_pred, test_pred, res_cl_test)
-    plot_res(args.label_length, args.window_size, once_pred, size=(1, 2),
+    plot_res(args, once_pred, size=(2, 1),
              train_pred=None, res_cl_train=None,
              test_pred=test_pred, res_cl_test=res_cl_test)
 
